@@ -28,9 +28,17 @@ const App = () => {
       created: new Date().toString(),
     },
   ]);
+
+  function addItem(item) {
+    item._id = logs.length + 1;
+    item.created = new Date().toString();
+    setLogs([...logs, item]);
+    console.log(item._id);
+  }
+
   return (
     <Container>
-      <AddLogItem />
+      <AddLogItem addItem={addItem} />
       <Table>
         <thead>
           <tr>
