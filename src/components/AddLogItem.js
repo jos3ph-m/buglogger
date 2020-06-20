@@ -9,6 +9,7 @@ const AddLogItem = (props) => {
   const [text, setText] = useState("");
   const [user, setUser] = useState();
   const [priority, setPriority] = useState();
+
   return (
     <Card className="mt-5 mb-3">
       <Card.Body>
