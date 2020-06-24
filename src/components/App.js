@@ -1,39 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
 import LogItem from "./LogItem";
 import AddLogItem from "./AddLogItem";
+import { ipcRenderer } from "electron";
 
 const App = () => {
-  const [logs, setLogs] = useState([
-    {
-      _id: 1,
-      text: "This is log one",
-      priority: "low",
-      user: "Shteve",
-      created: new Date().toString(),
-    },
-    {
-      _id: 2,
-      text: "This is log two",
-      priority: "moderate",
-      user: "Ariel",
-      created: new Date().toString(),
-    },
-    {
-      _id: 3,
-      text: "This is log three",
-      priority: "high",
-      user: "Jaclyn",
-      created: new Date().toString(),
-    },
-  ]);
+  const [logs, setLogs] = useState([]);
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     variant: "success",
   });
+
+  useEffect(() => {
+    ipcRenderer.send("logs:load");
+
+    ipcRenderer.on("logs:get", (e, logs) => {
+      setLogs(JSON.parse(logs));
+    });
+
+    ipcRenderer.on("logs:clear", () => {
+      setLogs([]);
+      showAlert("Logs Cleared");
+    });
+  }, []);
 
   function addItem(item) {
     if (item.text === "" || item.user === "" || item.priority === "") {
@@ -41,15 +33,19 @@ const App = () => {
       return false;
     }
 
-    item._id = logs.length + 1;
-    item.created = new Date().toString();
-    setLogs([...logs, item]);
+    // item._id = logs.length + 1;
+    // item.created = new Date().toString();
+    // setLogs([...logs, item]);
+
+    ipcRenderer.send("logs:add", item);
+
     showAlert("Log Added");
   }
 
   function deleteItem(_id) {
-    setLogs(logs.filter((item) => item._id !== _id));
-    showAlert("Log Removed");
+    // setLogs(logs.filter((item) => item._id !== _id));
+    ipcRenderer.send("logs:delete", _id);
+    showAlert(`Log ID: ${_id} Removed`);
   }
 
   function showAlert(message, variant = "success", seconds = 3000) {
