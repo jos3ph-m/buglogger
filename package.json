@@ -28,7 +28,8 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
-    "react-moment": "^0.9.7"
+    "react-moment": "^0.9.7",
+    "set-value": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
